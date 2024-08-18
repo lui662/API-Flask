@@ -11,6 +11,8 @@ import datetime
 from flask import Flask, jsonify, request
 import mysql.connector
 
+app = Flask(__name__)
+
 def conexao_com_db():
     return mysql.connector.connect(
         host="localhost",
@@ -42,8 +44,6 @@ def verificar_se_existe_disciplina(conexao, id_disciplina):
     resultado = cursor.fetchone()
     cursor.close()
     return resultado is not None
-
-app = Flask(__name__)
 
 #-----------------------------------------------------ALUNO-----------------------------------------------------------#
 
