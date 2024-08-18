@@ -7,18 +7,25 @@ endpoint:
     UPDATE
     DELETE
 """
-import datetime
+import datetime, os
 from flask import Flask, jsonify, request
 import mysql.connector
 
 app = Flask(__name__)
 
+DATABASE_HOST = os.getenv("BD_HOST")
+DATABASE_PORT = os.getenv("BD_PORT")
+DATABASE_USER = os.getenv("BD_USER")
+DATABASE_PASSWORD = os.getenv("BD_PASSWORD")
+DATABASE_NAME = os.getenv("BD_NAME")
+
 def conexao_com_db():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Brasil2021#",
-        database="cadastroturmas"
+        host=DATABASE_HOST,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD,
+        database=DATABASE_NAME,
+        port=DATABASE_PORT
     )
 
 def verificar_se_existe_aluno(conexao, id_aluno):
@@ -552,4 +559,4 @@ def deletar_turma_por_id(id_turma):
     return jsonify(resultado)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
