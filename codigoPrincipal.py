@@ -20,8 +20,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def conexao_com_db():
     db = SQLAlchemy(app)
     return db
-
-print(conexao_com_db())
+texto = conexao_com_db()
+print(texto)
 
 # DATABASE_HOST = os.getenv("MYSQLHOST")
 # DATABASE_PORT = os.getenv("MYSQLPORT")
