@@ -9,40 +9,31 @@ endpoint:
 """
 import datetime, os
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+DATABASE_HOST = os.getenv("MYSQLHOST")
+DATABASE_PORT = os.getenv("MYSQLPORT")
+DATABASE_USER = os.getenv("MYSQLUSER")
+DATABASE_PASSWORD = os.getenv("MYSQLPASSWORD")
+DATABASE_NAME = os.getenv("MYSQL_DATABASE")
+
+print("Host:", DATABASE_HOST)
+print("Port:", DATABASE_PORT)
+print("User:", DATABASE_USER)
+print("Password:", DATABASE_PASSWORD)
+print("Database:", DATABASE_NAME)
 
 def conexao_com_db():
-    db = SQLAlchemy(app)
-    return db
-texto = conexao_com_db()
-print(texto)
-
-# DATABASE_HOST = os.getenv("MYSQLHOST")
-# DATABASE_PORT = os.getenv("MYSQLPORT")
-# DATABASE_USER = os.getenv("MYSQLUSER")
-# DATABASE_PASSWORD = os.getenv("MYSQLPASSWORD")
-# DATABASE_NAME = os.getenv("MYSQL_DATABASE")
-
-# print("Host:", DATABASE_HOST)
-# print("Port:", DATABASE_PORT)
-# print("User:", DATABASE_USER)
-# print("Password:", DATABASE_PASSWORD)
-# print("Database:", DATABASE_NAME)
-
-# def conexao_com_db():
-#     return mysql.connector.connect(
-#         host=DATABASE_HOST,
-#         user=DATABASE_USER,
-#         password=DATABASE_PASSWORD,
-#         database=DATABASE_NAME,
-#         port=DATABASE_PORT
-#     )
+    return mysql.connector.connect(
+        host=DATABASE_HOST,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD,
+        database=DATABASE_NAME,
+        port=DATABASE_PORT
+    )
 
 def verificar_se_existe_aluno(conexao, id_aluno):
     cursor = conexao.cursor()    
