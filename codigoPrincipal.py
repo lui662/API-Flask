@@ -13,11 +13,11 @@ import mysql.connector
 
 app = Flask(__name__)
 
-DATABASE_HOST = os.getenv("BD_HOST")
-DATABASE_PORT = os.getenv("BD_PORT")
-DATABASE_USER = os.getenv("BD_USER")
-DATABASE_PASSWORD = os.getenv("BD_PASSWORD")
-DATABASE_NAME = os.getenv("BD_NAME")
+DATABASE_HOST = os.getenv("MYSQLHOST")
+DATABASE_PORT = os.getenv("MYSQLPORT")
+DATABASE_USER = os.getenv("MYSQLUSER")
+DATABASE_PASSWORD = os.getenv("MYSQLPASSWORD")
+DATABASE_NAME = os.getenv("MYSQLDATABASE")
 
 def conexao_com_db():
     return mysql.connector.connect(
