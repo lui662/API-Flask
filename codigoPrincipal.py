@@ -53,6 +53,10 @@ def verificar_se_existe_disciplina(conexao, id_disciplina):
     return resultado is not None
 
 #-----------------------------------------------------ALUNO-----------------------------------------------------------#
+@app.route('/', methods=['GET'])
+def testando_api():
+    texto = 'TESTANDO A API'
+    return jsonify({'SUCESSO': texto})
 
 #METODO POST PARA ALUNO 
 @app.route('/aluno/cadastrar', methods=['POST'])
@@ -559,4 +563,4 @@ def deletar_turma_por_id(id_turma):
     return jsonify(resultado)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
