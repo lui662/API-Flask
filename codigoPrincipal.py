@@ -8,16 +8,10 @@ endpoint:
     DELETE
 """
 import datetime, os
-from flask_cors import CORS
 from flask import Flask, jsonify, request
 import mysql.connector
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/aluno/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/professor/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/disciplina/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/nota/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/turma/*": {"origins": "https://web-production-e0f5.up.railway.app"}})
 
 DATABASE_HOST = os.getenv("MYSQLHOST")
 DATABASE_PORT = os.getenv("MYSQLPORT")
@@ -73,32 +67,30 @@ def testando_api():
 #METODO POST PARA ALUNO 
 @app.route('/aluno/cadastrar', methods=['POST'])
 def cadastrar_novo_aluno():
-    
     data = request.json
+
+    # Verificar se os campos necessários estão presentes
     if not data or 'name' not in data or 'date' not in data:
         return jsonify({'error': 'Dados de entrada inválidos'}), 400
-    
-    conexao = conexao_com_db()
-    cursor = conexao.cursor()
+
     nome = data.get('name')
-    data_nascimento = data.get('date')
+    data_nascimento = data.get('date')  # Já vem no formato 'YYYY-MM-DD'
 
     try:
+        conexao = conexao_com_db()
+        cursor = conexao.cursor()
 
-        data_nascimento = datetime.datetime.strptime(data_nascimento, '%Y-%m-%d').date()
-
-    except ValueError:
-        return jsonify({'ERRO': 'Formato de data invalido, Use YYYY-MM-DD'}), 400
-
-    try:
-        comando = f'INSERT INTO aluno (nome, data_nascimento) VALUES (%s, %s)'
+        comando = 'INSERT INTO aluno (nome, data_nascimento) VALUES (%s, %s)'
         cursor.execute(comando, (nome, data_nascimento))
         conexao.commit()
-        cursor.close()
-        return jsonify({'SUCESSO': 'Aluno cadastrado com sucesso '}), 201
+
+        return jsonify({'SUCESSO': 'Aluno cadastrado com sucesso'}), 201
 
     except Exception as e:
         return jsonify({'ERRO': str(e)}), 500
+    finally:
+        cursor.close()
+        conexao.close()
 
 #METODO GET PARA ALUNO 
 @app.route('/aluno/listar', methods=['GET'])
