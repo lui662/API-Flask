@@ -12,13 +12,6 @@ from flask_cors import CORS
 from flask import Flask, jsonify, request
 import mysql.connector
 
-app = Flask(__name__)
-cors = CORS(app, resources={r"/aluno/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/professor/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/disciplina/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/nota/*": {"origins": "https://web-production-e0f5.up.railway.app"},
-                             r"/turma/*": {"origins": "https://web-production-e0f5.up.railway.app"}})
-
 DATABASE_HOST = os.getenv("MYSQLHOST")
 DATABASE_PORT = os.getenv("MYSQLPORT")
 DATABASE_USER = os.getenv("MYSQLUSER")
