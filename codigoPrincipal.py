@@ -71,27 +71,23 @@ def cadastrar_novo_aluno():
     if not data or 'name' not in data or 'date' not in data:
         return jsonify({'error': 'Dados de entrada inválidos'}), 400
     
-    conexao = conexao_com_db()
-    cursor = conexao.cursor()
     nome = data.get('name')
     data_nascimento = data.get('date')
-
+        
     try:
-
-        data_nascimento = datetime.datetime.strptime(data_nascimento, '%Y-%m-%d').date()
-
-    except ValueError:
-        return jsonify({'ERRO': 'Formato de data invalido, Use YYYY-MM-DD'}), 400
-
-    try:
+        conexao = conexao_com_db()
+        cursor = conexao.cursor()
+        
         comando = f'INSERT INTO aluno (nome, data_nascimento) VALUES (%s, %s)'
         cursor.execute(comando, (nome, data_nascimento))
         conexao.commit()
-        cursor.close()
         return jsonify({'SUCESSO': 'Aluno cadastrado com sucesso '}), 201
 
     except Exception as e:
         return jsonify({'ERRO': str(e)}), 500
+    finally:
+        cursor.close()
+        conexao.close()
 
 #METODO GET PARA ALUNO 
 @app.route('/aluno/listar', methods=['GET'])
