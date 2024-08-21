@@ -195,10 +195,10 @@ def cadastrar_novo_professor():
     nome = data.get('name')
     especializacao = data.get('especializacao')
 
-    conexao = conexao_com_db()
-    cursor = conexao.cursor()
-
     try:
+        conexao = conexao_com_db()
+        cursor = conexao.cursor()
+
         comando = f'INSERT INTO professor (nome, especializacao) VALUES (%s, %s)'
         cursor.execute(comando, (nome, especializacao))
         conexao.commit()
