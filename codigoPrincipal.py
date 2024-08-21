@@ -6,6 +6,7 @@ endpoint:
     READ
     UPDATE
     DELETE
+    gunicorn==20.1.0
 """
 import datetime, os
 from flask import Flask, jsonify, request
@@ -18,12 +19,6 @@ DATABASE_PORT = os.getenv("MYSQLPORT")
 DATABASE_USER = os.getenv("MYSQLUSER")
 DATABASE_PASSWORD = os.getenv("MYSQLPASSWORD")
 DATABASE_NAME = os.getenv("MYSQL_DATABASE")
-
-print("Host:", DATABASE_HOST)
-print("Port:", DATABASE_PORT)
-print("User:", DATABASE_USER)
-print("Password:", DATABASE_PASSWORD)
-print("Database:", DATABASE_NAME)
 
 def conexao_com_db():
     return mysql.connector.connect(
