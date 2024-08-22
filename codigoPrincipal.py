@@ -6,13 +6,18 @@ endpoint:
     READ
     UPDATE
     DELETE
-    gunicorn==20.1.0
 """
 import datetime, os
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import mysql.connector
 
 app = Flask(__name__)
+CORS(app, resources={r'/*':{
+    "origins": "http://127.0.0.1:5500",
+    "methods": ["GET", "POST", "PUT", "DELETE"],
+    "allow_headers": ["*"]
+}})
 
 DATABASE_HOST = os.getenv("MYSQLHOST")
 DATABASE_PORT = os.getenv("MYSQLPORT")
@@ -54,10 +59,9 @@ def verificar_se_existe_disciplina(conexao, id_disciplina):
     return resultado is not None
 
 #-----------------------------------------------------ALUNO-----------------------------------------------------------#
-@app.route('/', methods=['GET'])
-def testando_api():
-    texto = 'TESTANDO A API'
-    return jsonify({'SUCESSO': texto})
+@app.route('/')
+def index():
+    return jsonify({"sucesso": "Inicialização da API bem sucessida"})
 
 #METODO POST PARA ALUNO 
 @app.route('/aluno/cadastrar', methods=['POST'])
