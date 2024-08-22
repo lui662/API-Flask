@@ -58,6 +58,44 @@ def verificar_se_existe_disciplina(conexao, id_disciplina):
     cursor.close()
     return resultado is not None
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({'ERRO':'dados não fornecido'}), 400
+    
+    userId = data.get('id_aluno') or data.get('id_professor')
+    userName = data.get('name')
+
+    if not userId or not userName:
+        return jsonify({"ERRO": "Campos obrigatorios ausentes"}), 400
+    
+    conexao = conexao_com_db()
+    cursor = conexao.cursor()
+
+    if 'id_professor' in data:
+        comando = 'SELECT id_professor FROM professor WHERE id_professor = %s AND nome = %s'
+        cursor.execute(comando, (userId, userName))
+    elif 'id_aluno' in data:
+        comando = 'SELECT id_aluno FROM aluno WHERE id_aluno = %s AND nome = %s'
+        cursor.execute(comando, (userId, userName))
+    else:
+        conexao.close()
+        cursor.close()
+        return jsonify({"Erro": "Usuario invalido"}), 400
+    
+    resultado = cursor.fetchone()
+    cursor.close()
+    conexao.close()
+
+    if resultado:
+        return jsonify({"SUCESSO": "login bem-sucedido"}), 200
+    else:
+        return jsonify({"message": "credenciais invalida"}), 400
+
+
 #-----------------------------------------------------ALUNO-----------------------------------------------------------#
 @app.route('/')
 def index():
