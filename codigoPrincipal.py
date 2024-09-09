@@ -627,6 +627,11 @@ def cadastrar_nota():
     id_aluno = data.get('id_aluno')
     id_disciplina = data.get('id_disciplina')
 
+    if not verificar_se_existe_aluno(conexao, id_aluno):
+        return jsonify({'ERRO': 'Aluno não encontrado'})
+    if not verificar_se_existe_disciplina(conexao, id_disciplina):
+        return jsonify({'ERRO': 'Disciplina não encontrada'})
+
     try:
         conexao = conexao_com_db()
         cursor = conexao.cursor()
