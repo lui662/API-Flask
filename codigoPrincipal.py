@@ -14,7 +14,7 @@ import mysql.connector
 
 app = Flask(__name__)
 CORS(app, resources={r'/*':{
-    "origins": "http://127.0.0.1:5500",
+    "origins": "https://fluffy-heliotrope-402e1f.netlify.app/",
     "methods": ["GET", "POST", "PUT", "DELETE"],
     "allow_headers": ["*"]
 }})
