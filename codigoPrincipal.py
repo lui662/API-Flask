@@ -407,7 +407,7 @@ def listar_disciplina_por_id(id_disciplina):
     conexao = conexao_com_db()
     cursor = conexao.cursor()
 
-    comando = 'SELECT * FROM dicisplina WHERE id_disciplina = %s'
+    comando = comando = 'SELECT * FROM disciplina WHERE id_disciplina = %s'
     cursor.execute(comando, (id_disciplina,))
     resultado = cursor.fetchone()
 
@@ -702,12 +702,12 @@ def editar_nota_por_id(id_nota):
         cursor.close()
         conexao.close()
 
-@app.route('/nota/alterar/<int:id_nota>', methods=['DELETE'])
-def deletar_turma_por_id(id_nota):
+@app.route('/nota/deletar/<int:id_nota>', methods=['DELETE'])
+def deletar_nota_por_id(id_nota):
     conexao = conexao_com_db()
     cursor = conexao.cursor()
 
-    comando = f'DELETE FROM nota WHERE id_nota = %s'
+    comando = 'DELETE FROM nota WHERE id_nota = %s'
     cursor.execute(comando, (id_nota,))
     conexao.commit()
 
@@ -715,7 +715,7 @@ def deletar_turma_por_id(id_nota):
         resultado = {'SUCESSO': 'Nota apagada com sucesso'}
     else:
         resultado = {'ERRO': 'Nota não encontrada'}
-    
+
     cursor.close()
     conexao.close()
 
