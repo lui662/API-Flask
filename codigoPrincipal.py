@@ -236,6 +236,7 @@ def cadastrar_novo_professor():
 
     nome = data.get('name')
     especializacao = data.get('especializacao')
+    id_disciplina = data.get('id_disciplina')
 
     try:
         conexao = conexao_com_db()
@@ -243,6 +244,13 @@ def cadastrar_novo_professor():
 
         comando = f'INSERT INTO professor (nome, especializacao) VALUES (%s, %s)'
         cursor.execute(comando, (nome, especializacao))
+        
+
+        id_professor = cursor.lastrowid
+
+        comando_acossiacao = f'INSERT INTO professor_disciplina(id_professor, id_disciplina) VALUES (%s, %s)'
+        cursor.execute(comando_acossiacao, (id_professor, id_disciplina))
+
         conexao.commit()
         return jsonify({'SUCESSO': 'Professor cadastrado com sucesso!'}), 201
     except Exception as e:
@@ -251,6 +259,11 @@ def cadastrar_novo_professor():
     finally:
         conexao.close()
         cursor.close()
+
+#METODO POST PARA VERIFICAR SE PROFESSOR ESTA ASSOCIADO A UMA DISCIPLINA
+@app.route('/professor/associardisciplina', methods=['POST'])
+def associar_professor_a_uma_disciplina_existente():
+    data = request.json
 
 #METODO GET PARA PROFESSOR 
 @app.route('/professor/listar', methods=['GET'])
@@ -597,6 +610,111 @@ def deletar_turma_por_id(id_turma):
         resultado = {'SUCESSO': 'Turma apagada com sucesso'}
     else:
         resultado = {'ERRO': 'turma não encontrada'}
+    
+    cursor.close()
+    conexao.close()
+
+    return jsonify(resultado)
+
+@app.route('/nota/cadastrar', methods=['POST'])
+def cadastrar_nota():
+    data = request.json
+
+    if not data or 'nota' not in data or 'id_aluno' not in data or 'id_disciplina' not in data:
+        return jsonify({'ERRO': 'Dados de entrada inválidos'}), 400
+
+    nota = data.get('nota')
+    id_aluno = data.get('id_aluno')
+    id_disciplina = data.get('id_disciplina')
+
+    try:
+        conexao = conexao_com_db()
+        cursor = conexao.cursor()
+
+        comando = 'INSERT INTO nota (nota, id_aluno, id_disciplina) VALUES (%s, %s, %s)'
+        cursor.execute(comando, (nota, id_aluno, id_disciplina))
+        conexao.commit()
+
+        return jsonify({'SUCESSO': 'Nota cadastrada com sucesso!'}), 201
+    except mysql.connector.Error as e:
+        conexao.rollback()
+        return jsonify({'ERRO': str(e)}), 500
+    finally:
+        cursor.close()
+        conexao.close()
+
+@app.route('/nota/listar', methods=['GET'])
+def listar_notas():
+    conexao = conexao_com_db()
+    cursor = conexao.cursor()
+
+    comando = 'SELECT * FROM nota'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    return jsonify(resultado)
+
+@app.route('/nota/listar/<int:id_nota>', methods=['GET'])
+def listar_nota_por_id(id_nota):
+    conexao = conexao_com_db()
+    cursor = conexao.cursor()
+
+    comando = 'SELECT * FROM nota WHERE id_nota = %s'
+    cursor.execute(comando, (id_nota,))
+    nota = cursor.fetchone()
+
+    cursor.close()
+    conexao.close()
+
+    if nota:
+        return jsonify(nota)
+    else:
+        return jsonify({'ERRO': 'Nota não encontrada'}), 404
+
+@app.route('/nota/alterar/<int:id_nota>', methods=['PUT'])
+def editar_nota_por_id(id_nota):
+    data = request.json
+
+    if not data or ('nota' not in data):
+        return jsonify({'ERRO': 'Dados de entrada inválidos'}), 400
+
+    nota = data.get('nota')
+
+    conexao = conexao_com_db()
+    cursor = conexao.cursor()
+
+    try:
+        comando = 'UPDATE nota SET nota = %s WHERE id_nota = %s'
+        cursor.execute(comando, (nota, id_nota))
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+            return jsonify({'SUCESSO': 'Nota atualizada com sucesso'}), 200
+        else:
+            return jsonify({'ERRO': 'Nota não encontrada'}), 404
+    except mysql.connector.Error as e:
+        conexao.rollback()
+        return jsonify({'ERRO': str(e)}), 500
+    finally:
+        cursor.close()
+        conexao.close()
+
+@app.route('/nota/alterar/<int:id_nota>', methods=['DELETE'])
+def deletar_turma_por_id(id_nota):
+    conexao = conexao_com_db()
+    cursor = conexao.cursor()
+
+    comando = f'DELETE FROM nota WHERE id_nota = %s'
+    cursor.execute(comando, (id_nota,))
+    conexao.commit()
+
+    if cursor.rowcount > 0:
+        resultado = {'SUCESSO': 'Nota apagada com sucesso'}
+    else:
+        resultado = {'ERRO': 'Nota não encontrada'}
     
     cursor.close()
     conexao.close()
